@@ -7,9 +7,8 @@ all: run
 $(BUILD_TARGET):
 	@go build -o $(BUILD_TARGET) .
 
-.PHONY: run
-run: $(BUILD_TARGET)
-	@sudo ./$(BUILD_TARGET)
+.PHONY: build
+build: $(BUILD_TARGET)
 
 .PHONY: install
 install: $(BUILD_TARGET)
@@ -21,8 +20,13 @@ install: $(BUILD_TARGET)
 
 .PHONY: uninstall
 uninstall:
+	@sudo systemctl stop web-server.service
 	@sudo rm -vf $(INSTALL_PATH)/$(BUILD_TARGET) /etc/systemd/system/web-server.service
 	@sudo systemctl daemon-reload
+
+.PHONY: run
+run: install
+	@sudo systemctl start web-server.service
 
 .PHONY: clean
 clean:
